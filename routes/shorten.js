@@ -4,12 +4,15 @@ const mongoose = require("mongoose");
 
 const ShortUrl = require("../models/shortUrl");
 
+let host = "";
+const arrayToReturn = new Array();
+
 router.post("/", async (req, res) => {
     if (!ValidateUrls(req.body.urls)) {
         res.status(422).json({ error: "one or more url is invalid" });
     }
-    const arrayToReturn = new Array();
-    findOrCreate(req.body.urls, arrayToReturn)
+    host = req.headers.host;
+    findOrCreate(req.body.urls)
         .then((result) => {
             res.status(200).json(arrayToReturn)
         })
@@ -19,14 +22,16 @@ router.post("/", async (req, res) => {
         });
 });
 
-async function findOrCreate(urls, arrayToReturn) {
+async function findOrCreate(urls) {
     for (var url of urls) {
         var dbUrl = await ShortUrl.findOne({ full: url });
         if (dbUrl != null) {
+            dbUrl.short = host + "/" + dbUrl.short;
             arrayToReturn.push(dbUrl);
         }
         else {
             var shortUrl = await ShortUrl.create({ full: url });
+            shortUrl.short = host + "/" + shortUrl.short;
             arrayToReturn.push(shortUrl);
         }
     }
