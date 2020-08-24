@@ -27,7 +27,7 @@ async function findOrCreate(urls) {
     for (var url of urls) {
         var dbUrl = await ShortUrl.findOne({ full: url });
         if (dbUrl != null) {
-            dbUrl.short = host + "/" + dbUrl.short;
+            dbUrl.short = "http://" +host + "/" + dbUrl.short;
             arrayToReturn.push(dbUrl);
         }
         else {
