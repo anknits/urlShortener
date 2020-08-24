@@ -18,7 +18,7 @@ app.use(function (req, res, next) {
 
 app.get('/:shortUrl', async (req, res) => {
     const dbUrl = await ShortUrl.findOne({ short: req.params.shortUrl })
-    if (dbUrl == null) res.send(404);
+    if (dbUrl == null) return res.sendStatus(404);
     dbUrl.clicks++;
     dbUrl.save();
     res.redirect(dbUrl.full);
@@ -26,5 +26,5 @@ app.get('/:shortUrl', async (req, res) => {
 
 app.use("/api/shorten", shorten);
 
-const port = process.env.Port || 5000;
+const port = process.env.PORT || 5000;
 app.listen(port, () => console.log(`listening on port ${port}...`));

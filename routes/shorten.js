@@ -5,7 +5,7 @@ const mongoose = require("mongoose");
 const ShortUrl = require("../models/shortUrl");
 
 let host = "";
-const arrayToReturn = new Array();
+let arrayToReturn = new Array();
 
 router.post("/", async (req, res) => {
     if (!ValidateUrls(req.body.urls)) {
@@ -23,6 +23,7 @@ router.post("/", async (req, res) => {
 });
 
 async function findOrCreate(urls) {
+    arrayToReturn = new Array();
     for (var url of urls) {
         var dbUrl = await ShortUrl.findOne({ full: url });
         if (dbUrl != null) {
